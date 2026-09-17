@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>BILA — Belajar Berhitung Bersama</title>
+<meta name="description" content="BILA, platform belajar berhitung dasar yang ramah dan menyenangkan untuk anak.">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div id="app">
+
+  <!-- ======================================================= -->
+  <!-- 1. SPLASH SCREEN -->
+  <!-- ======================================================= -->
+  <section class="screen bg-sky is-active" id="screen-splash" data-screen="splash">
+    <div class="stage splash-stage">
+      <img class="mascot mascot-xl mascot-bob" id="splashMascot" src="assets/mascot/bila-idle.png" alt="Maskot BILA melambaikan tangan">
+      <div class="splash-logo" aria-label="BILA">
+        <span>B</span><span>I</span><span>L</span><span>A</span>
+      </div>
+      <div class="splash-dots">
+        <span class="active"></span><span></span><span></span>
+      </div>
+      <p class="splash-tap">Sentuh layar untuk mulai</p>
+    </div>
+  </section>
+
+  <!-- ======================================================= -->
+  <!-- 2. INPUT DATA SISWA -->
+  <!-- ======================================================= -->
+  <section class="screen bg-sky" id="screen-input" data-screen="input">
+    <div class="stage">
+      <div class="card input-card">
+        <img class="mascot mascot-md mascot-bob" src="assets/mascot/bila-idle.png" alt="Maskot BILA">
+        <p class="field-hint" style="margin-bottom:6px;">Diisi oleh Bapak/Ibu Guru</p>
+
+        <div class="field">
+          <label for="inputNama">Nama Siswa</label>
+          <input type="text" id="inputNama" placeholder="Ketik nama siswa..." autocomplete="off">
+          <span class="field-error">Nama siswa wajib diisi.</span>
+        </div>
+
+        <div class="field">
+          <label for="inputNisn">NISN <span style="font-weight:500;color:var(--bila-text-soft);">(opsional)</span></label>
+          <input type="text" id="inputNisn" placeholder="Ketik NISN..." inputmode="numeric" autocomplete="off">
+        </div>
+
+        <button class="btn btn-yellow btn-block" id="btnMulai">Mulai!</button>
+
+        <div class="rfid-hint">
+          <span class="rfid-dot" id="rfidStatusDot"></span>
+          <span id="rfidStatusText">Atau tempelkan kartu RFID siswa</span>
+        </div>
+
+        <button class="btn-settings btn-settings-open" style="margin:18px auto 0;" aria-label="Pengaturan alat">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path stroke-linecap="round" d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.6 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.6a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z"/></svg>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================================================= -->
+  <!-- 3. LEVEL SELECTION -->
+  <!-- ======================================================= -->
+  <section class="screen bg-level-select" id="screen-level" data-screen="level">
+    <div class="stage stage-level" style="position:relative;z-index:1;">
+      <div class="level-header">
+        <p class="level-greeting">Haiii <b id="siswaNamaDisplay">Adik</b>, ayo belajar lagi!</p>
+      </div>
+      <div class="level-path" id="levelPath"><!-- diisi oleh JS --></div>
+    </div>
+  </section>
+
+  <!-- ======================================================= -->
+  <!-- 4. HALAMAN SOAL (GAME) -->
+  <!-- ======================================================= -->
+  <section class="screen bg-game" id="screen-soal" data-screen="soal">
+    <div class="stage" style="position:relative;z-index:1;">
+      <div class="topbar">
+        <button class="speaker-btn" id="btnSpeaker" aria-label="Dengar lagi">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5 6 9H2v6h4l5 4V5ZM19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+        </button>
+        <div class="progress-dots" id="soalProgressDots"><!-- diisi JS --></div>
+        <div class="topbar-right">
+          <span class="device-badge" id="deviceBadge"><span class="dot"></span><span id="deviceBadgeText">Alat tidak terhubung</span></span>
+          <button class="btn-settings btn-settings-open" aria-label="Pengaturan alat">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path stroke-linecap="round" d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.6 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.6a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="mascot-row">
+        <img class="mascot mascot-sm" id="soalMascot" src="assets/mascot/bila-idle.png" alt="Maskot BILA">
+        <div class="speech-bubble" id="soalInstruksi">Targetnya adalah lima! Susun sampai jadi 5</div>
+      </div>
+
+      <div class="card target-card">
+        <p class="target-label">Target:</p>
+        <div class="target-dots" id="targetDots"><!-- diisi JS --></div>
+
+        <div class="balok-count">
+          <p class="label">Balokmu:</p>
+          <p class="num" id="balokCount">0</p>
+        </div>
+
+        <p class="hitung-label">Balok yang ditaruh:</p>
+        <div class="hitung-row" id="hitungRow">
+          <div class="tray-empty" id="trayEmptyMsg">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+            Taruh balok di alat pembaca untuk mulai menghitung
+          </div>
+        </div>
+
+        <div class="check-btn-wrap">
+          <button class="btn btn-mint btn-block" id="btnCekJawaban">Cek Jawaban</button>
+        </div>
+      </div>
+
+      <div class="soal-footer-progress">
+        <span class="step" id="soalStepText">Soal ke-1 dari 5</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================================================= -->
+  <!-- 5 & 6. OVERLAY: JAWABAN BENAR / SALAH -->
+  <!-- ======================================================= -->
+  <div class="overlay" id="overlayFeedback" aria-hidden="true">
+    <div class="overlay-card" id="overlayCard">
+      <div class="confetti" id="confettiHolder"></div>
+      <img class="mascot mascot-lg mascot-pop" id="overlayMascot" src="assets/mascot/bila-idle.png" alt="Maskot BILA" style="margin-inline:auto;">
+      <p class="overlay-title" id="overlayTitle">Benar sekali!</p>
+      <p class="overlay-sub" id="overlaySub">Lanjut ke soal berikutnya…</p>
+      <button class="btn btn-blue btn-block" id="btnOverlayNext">Lanjut</button>
+    </div>
+  </div>
+
+  <!-- ======================================================= -->
+  <!-- 7 & 8. LEVEL SELESAI / LEVEL BERIKUTNYA TERBUKA -->
+  <!-- ======================================================= -->
+  <section class="screen bg-game" id="screen-selesai" data-screen="selesai">
+    <div class="stage selesai-stage" style="position:relative;z-index:1;">
+      <img class="mascot mascot-lg mascot-pop" style="margin-inline:auto;" id="selesaiMascot" src="assets/mascot/bila-idle.png" alt="Maskot BILA bertepuk tangan">
+      <p class="selesai-title" id="selesaiTitle">Kelas 1 selesai!</p>
+      <div class="stars-row" id="starsRow">
+        <svg viewBox="0 0 24 24" fill="currentColor" style="color:var(--bila-yellow)"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.9L12 17.8 5.8 21l1.2-6.9-5-4.9 6.9-1L12 2Z"/></svg>
+        <svg viewBox="0 0 24 24" fill="currentColor" style="color:var(--bila-yellow)"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.9L12 17.8 5.8 21l1.2-6.9-5-4.9 6.9-1L12 2Z"/></svg>
+        <svg viewBox="0 0 24 24" fill="currentColor" style="color:var(--bila-yellow)"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.9L12 17.8 5.8 21l1.2-6.9-5-4.9 6.9-1L12 2Z"/></svg>
+      </div>
+
+      <div class="unlock-panel" id="unlockPanel">
+        <p class="field-hint">Kelas berikutnya terbuka!</p>
+        <div class="unlock-row" id="unlockRow"><!-- diisi JS --></div>
+      </div>
+
+      <button class="btn btn-yellow btn-block" id="btnSelesai">Selesai</button>
+    </div>
+  </section>
+
+  <!-- ======================================================= -->
+  <!-- MODAL: PENGATURAN KONEKSI ALAT (ESP8266 / NFC reader) -->
+  <!-- ======================================================= -->
+  <div class="overlay settings-modal" id="settingsModal" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
+      <h3 id="settingsTitle">Pengaturan Alat</h3>
+      <p class="hint">Hubungkan website ke ESP8266 yang terpasang pada reader NFC balok.</p>
+
+      <label for="espAddress" style="font-weight:700;font-size:.88rem;color:var(--bila-blue);">Alamat WebSocket ESP8266</label>
+      <div class="settings-row">
+        <input type="text" id="espAddress" placeholder="ws://192.168.4.1:81/" autocomplete="off">
+      </div>
+      <div class="settings-row">
+        <button class="btn btn-blue btn-block" id="btnConnectEsp">Hubungkan</button>
+      </div>
+
+      <div class="settings-toggle">
+        <span>Musik Latar (Relax)</span>
+        <button class="switch" id="switchMusik" role="switch" aria-checked="true" aria-label="Aktifkan/matikan musik latar"></button>
+      </div>
+
+      <div class="settings-toggle">
+        <span>Mode Simulasi (tanpa alat)</span>
+        <button class="switch" id="switchSimulasi" role="switch" aria-checked="false" aria-label="Aktifkan mode simulasi"></button>
+      </div>
+
+      <div class="sim-panel hidden" id="simPanel">
+        <p class="sim-panel-label">Tap angka untuk mensimulasikan balok ditaruh di reader:</p>
+        <div class="sim-grid" id="simGrid"><!-- diisi JS, tombol nilai 1-10 --></div>
+        <button class="sim-clear-btn" id="btnSimClear">Kosongkan semua balok simulasi</button>
+      </div>
+
+      <button class="btn btn-outline btn-block settings-close" id="btnSettingsClose">Tutup</button>
+    </div>
+  </div>
+
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>

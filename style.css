@@ -1,0 +1,785 @@
+/* ==========================================================================
+   BILA — Platform Belajar Berhitung untuk Anak
+   Design system: pastel, rounded, playful, child-friendly
+   Master reference: layout tablet (768–1024px), diadaptasi ke mobile & desktop
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:wght@400;600;700;800&display=swap');
+
+:root{
+  /* ---- warna BILA (diambil dari referensi desain) ---- */
+  --bila-blue:        #2E8FEA;   /* badan maskot / warna utama */
+  --bila-blue-dark:   #1E6FC0;   /* border / shading / teks pada tombol biru */
+  --bila-blue-deep:   #16406E;   /* judul gelap di atas background terang */
+  --bila-light-blue:  #C7E9FB;   /* wajah maskot / card highlight biru muda */
+  --bila-yellow:      #FFD34E;   /* telinga maskot, badge, bintang */
+  --bila-yellow-dark: #F2B90E;
+  --bila-mint:        #5FE3C0;   /* bintang di dada, target dot, aksen sukses */
+  --bila-mint-dark:   #2FBE9C;
+  --bila-purple:      #8C82E8;   /* dot progres aktif */
+  --bila-red:         #FF6B6B;   /* mulut maskot / aksen salah (lembut, bukan alarm) */
+
+  --bila-bg-sky:      #EAF7FE;   /* background splash & input siswa */
+  --bila-bg-grass-1:  #DDF3D6;   /* gradasi rumput atas */
+  --bila-bg-grass-2:  #BFE7BE;   /* gradasi rumput bawah */
+  --bila-card:        #FFFFFF;
+  --bila-card-soft:   #F4FAFF;
+
+  --bila-text:        #1F3B57;   /* teks utama gelap */
+  --bila-text-soft:   #5B7186;   /* teks sekunder */
+  --bila-text-onblue: #FFFFFF;
+
+  --bila-shadow:      0 10px 24px -8px rgba(30,80,140,0.22);
+  --bila-shadow-sm:   0 6px 14px -6px rgba(30,80,140,0.2);
+
+  --radius-card: 28px;
+  --radius-btn:  999px;
+  --radius-sm:   16px;
+
+  --font-display: 'Baloo 2', 'Nunito', sans-serif;
+  --font-body: 'Nunito', sans-serif;
+
+  --ease-bounce: cubic-bezier(.34,1.56,.64,1);
+  --ease-soft: cubic-bezier(.22,.9,.4,1);
+}
+
+/* ---------- reset ---------- */
+*,*::before,*::after{ box-sizing: border-box; }
+html,body{ height: 100%; }
+body{
+  margin:0;
+  font-family: var(--font-body);
+  color: var(--bila-text);
+  background: var(--bila-bg-sky);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+img{ max-width:100%; display:block; }
+button{ font-family: inherit; border:none; background:none; cursor:pointer; }
+input{ font-family: inherit; }
+h1,h2,h3,p{ margin:0; }
+:focus-visible{ outline: 3px solid var(--bila-purple); outline-offset: 3px; }
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{ animation-duration:.001ms !important; transition-duration:.001ms !important; }
+}
+
+/* ==========================================================================
+   APP SHELL
+   ========================================================================== */
+#app{
+  position: relative;
+  min-height: 100dvh;
+  width: 100%;
+}
+
+.screen{
+  display: none;
+  min-height: 100dvh;
+  width: 100%;
+  padding: 20px 16px 40px;
+  align-items: center;
+  justify-content: center;
+}
+.screen.is-active{ display: flex; }
+
+.stage{
+  width: 100%;
+  max-width: 480px;      /* mobile-first card width */
+  margin-inline: auto;
+}
+
+/* tablet = master reference: lebarkan sedikit */
+@media (min-width: 768px){
+  .stage{ max-width: 620px; }
+}
+/* laptop / desktop: batasi agar tidak melebar berlebihan */
+@media (min-width: 1024px){
+  .stage{ max-width: 680px; }
+  .screen{ padding: 40px 24px; }
+}
+@media (min-width: 1440px){
+  .stage{ max-width: 720px; }
+}
+
+/* backgrounds per konteks */
+.bg-sky{ background: var(--bila-bg-sky); }
+.bg-game{
+  background: linear-gradient(180deg, var(--bila-bg-sky) 0%, var(--bila-bg-sky) 32%, var(--bila-bg-grass-1) 55%, var(--bila-bg-grass-2) 100%);
+  position: relative;
+}
+.bg-game::before{
+  content:'';
+  position: absolute; inset:0;
+  background-image:
+    radial-gradient(6px 6px at 12% 78%, #FFFFFF 40%, transparent 41%),
+    radial-gradient(5px 5px at 85% 82%, #FFFFFF 40%, transparent 41%),
+    radial-gradient(4px 4px at 45% 90%, #FFFFFF 40%, transparent 41%);
+  opacity:.7;
+  pointer-events: none;
+}
+
+/* Background ilustrasi khusus layar Level Selection — maskot & sekolah
+   sudah tergambar di file gambarnya, konten diletakkan di area krem tengah. */
+.bg-level-select{
+  background-color: var(--bila-bg-sky);
+  background-image: url('assets/backgrounds/level-select-bg.png');
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: top center;
+  align-items: flex-start !important;
+  padding-top: 26vh !important;
+  padding-bottom: 22vh !important;
+}
+@media (min-width: 768px){
+  .bg-level-select{ padding-top: 22vh !important; padding-bottom: 18vh !important; }
+}
+@media (min-aspect-ratio: 3/4){
+  /* layar lebih lebar/pendek dari gambar (laptop/desktop): jaga area krem tetap terlihat */
+  .bg-level-select{ background-size: auto 120%; }
+}
+.stage-level{ width:100%; }
+.decor-flower{
+  position:absolute;
+  width:26px; height:26px;
+  opacity:.9;
+  pointer-events:none;
+}
+
+/* ==========================================================================
+   TOP BAR (speaker + progress) — dipakai di layar game
+   ========================================================================== */
+.topbar{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  margin-bottom: 18px;
+  position: relative;
+  z-index: 1;
+}
+.speaker-btn{
+  width:46px; height:46px;
+  border-radius:50%;
+  background: var(--bila-mint);
+  color:#fff;
+  display:flex; align-items:center; justify-content:center;
+  box-shadow: var(--bila-shadow-sm);
+  transition: transform .2s var(--ease-bounce);
+}
+.speaker-btn:active{ transform: scale(.9); }
+.speaker-btn svg{ width:22px; height:22px; }
+
+.progress-dots{
+  display:flex;
+  gap:7px;
+  align-items:center;
+}
+.progress-dots .pdot{
+  width:11px; height:11px;
+  border-radius:50%;
+  background:#D9E6EC;
+  transition: all .25s var(--ease-soft);
+}
+.progress-dots .pdot.done{ background: var(--bila-mint-dark); }
+.progress-dots .pdot.current{ background: var(--bila-purple); width:22px; border-radius:999px; }
+
+/* ==========================================================================
+   MASCOT
+   ========================================================================== */
+.mascot{
+  display:block;
+  filter: drop-shadow(0 8px 14px rgba(30,80,140,.22));
+}
+.mascot-sm{ width:64px; }
+.mascot-md{ width:110px; }
+.mascot-lg{ width:170px; }
+.mascot-xl{ width:220px; }
+
+.mascot-bob{ animation: bob 2.6s ease-in-out infinite; }
+@keyframes bob{
+  0%,100%{ transform: translateY(0) rotate(0deg); }
+  50%{ transform: translateY(-8px) rotate(-2deg); }
+}
+.mascot-pop{ animation: pop-in .5s var(--ease-bounce); }
+@keyframes pop-in{
+  0%{ transform: scale(.4) translateY(30px); opacity:0; }
+  100%{ transform: scale(1) translateY(0); opacity:1; }
+}
+.mascot-shake{ animation: shake .5s ease; }
+@keyframes shake{
+  0%,100%{ transform: translateX(0) rotate(0); }
+  20%{ transform: translateX(-6px) rotate(-4deg); }
+  40%{ transform: translateX(6px) rotate(4deg); }
+  60%{ transform: translateX(-4px) rotate(-2deg); }
+  80%{ transform: translateX(4px) rotate(2deg); }
+}
+
+/* speech bubble */
+.speech-bubble{
+  position:relative;
+  background:#fff;
+  border-radius: 22px;
+  padding: 16px 20px;
+  box-shadow: var(--bila-shadow-sm);
+  font-family: var(--font-display);
+  font-weight:600;
+  font-size: 1.02rem;
+  color: var(--bila-blue-deep);
+  line-height:1.35;
+}
+.speech-bubble::after{
+  content:'';
+  position:absolute;
+  left: 34px; bottom: -12px;
+  width:22px; height:22px;
+  background:#fff;
+  clip-path: polygon(0 0, 100% 0, 0 100%);
+  border-radius: 0 0 0 6px;
+}
+.mascot-row{
+  display:flex;
+  align-items:flex-end;
+  gap:14px;
+  margin-bottom: 18px;
+}
+.mascot-row .speech-bubble{ flex:1; }
+
+/* ==========================================================================
+   CARD & BUTTON PRIMITIVES
+   ========================================================================== */
+.card{
+  background: var(--bila-card);
+  border-radius: var(--radius-card);
+  box-shadow: var(--bila-shadow);
+  padding: 28px 24px;
+}
+.card-soft{ background: var(--bila-card-soft); }
+
+.btn{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  font-family: var(--font-display);
+  font-weight:700;
+  font-size: 1.05rem;
+  padding: 15px 30px;
+  border-radius: var(--radius-btn);
+  transition: transform .18s var(--ease-bounce), box-shadow .18s var(--ease-soft), filter .18s;
+  box-shadow: 0 6px 0 rgba(0,0,0,0.12);
+}
+.btn:active{ transform: translateY(3px); box-shadow: 0 3px 0 rgba(0,0,0,0.12); }
+.btn-block{ width:100%; }
+.btn-mint{ background: var(--bila-mint); color:#fff; box-shadow: 0 6px 0 var(--bila-mint-dark); }
+.btn-mint:active{ box-shadow: 0 3px 0 var(--bila-mint-dark); }
+.btn-yellow{ background: var(--bila-yellow); color: var(--bila-blue-deep); box-shadow: 0 6px 0 var(--bila-yellow-dark); }
+.btn-yellow:active{ box-shadow: 0 3px 0 var(--bila-yellow-dark); }
+.btn-blue{ background: var(--bila-blue); color:#fff; box-shadow: 0 6px 0 var(--bila-blue-dark); }
+.btn-blue:active{ box-shadow: 0 3px 0 var(--bila-blue-dark); }
+.btn-outline{ background:#fff; color: var(--bila-blue); border:2px solid var(--bila-light-blue); box-shadow:none; }
+.btn:disabled{ opacity:.45; pointer-events:none; }
+
+/* ==========================================================================
+   SPLASH SCREEN
+   ========================================================================== */
+.splash-stage{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  text-align:center;
+  gap: 18px;
+}
+.splash-logo{
+  font-family: var(--font-display);
+  font-weight:800;
+  font-size: clamp(2.4rem, 2rem + 2vw, 3.4rem);
+  letter-spacing: .02em;
+  display:flex;
+}
+.splash-logo span:nth-child(1){ color: var(--bila-blue); }
+.splash-logo span:nth-child(2){ color: var(--bila-yellow); }
+.splash-logo span:nth-child(3){ color: var(--bila-mint); }
+.splash-logo span:nth-child(4){ color: var(--bila-purple); }
+.splash-dots{ display:flex; gap:8px; margin-top:6px; }
+.splash-dots span{ width:9px; height:9px; border-radius:50%; background:#CFE6F5; }
+.splash-dots span.active{ background: var(--bila-blue); }
+.splash-tap{
+  margin-top: 20px;
+  color: var(--bila-text-soft);
+  font-weight:700;
+  font-size:.92rem;
+  animation: pulse 1.6s ease-in-out infinite;
+}
+@keyframes pulse{ 0%,100%{opacity:.5;} 50%{opacity:1;} }
+
+/* ==========================================================================
+   INPUT SISWA
+   ========================================================================== */
+.input-card{ text-align:center; }
+.input-card .mascot{ margin-inline:auto; margin-bottom: 8px; }
+.field{ text-align:left; margin-top:18px; }
+.field label{
+  display:block;
+  font-family: var(--font-display);
+  font-weight:700;
+  color: var(--bila-blue);
+  margin-bottom:8px;
+  font-size:1rem;
+}
+.field input{
+  width:100%;
+  padding: 14px 18px;
+  border-radius: var(--radius-sm);
+  border: 2.5px solid var(--bila-light-blue);
+  font-size:1.05rem;
+  color: var(--bila-text);
+  background: var(--bila-card-soft);
+  transition: border-color .2s;
+}
+.field input:focus{ outline:none; border-color: var(--bila-blue); }
+.field-hint{ font-size:.8rem; color: var(--bila-text-soft); margin-top:6px; }
+.field-error{ display:none; font-size:.82rem; color:#D8543B; margin-top:6px; font-weight:700; }
+.field.has-error input{ border-color:#D8543B; }
+.field.has-error .field-error{ display:block; }
+.input-card .btn{ margin-top: 26px; }
+
+.rfid-hint{
+  margin-top:16px;
+  display:flex; align-items:center; gap:8px;
+  justify-content:center;
+  font-size:.82rem;
+  color: var(--bila-text-soft);
+}
+.rfid-dot{ width:8px; height:8px; border-radius:50%; background:#CBD8E2; }
+.rfid-dot.ready{ background: var(--bila-mint-dark); }
+
+/* ==========================================================================
+   LEVEL SELECTION
+   ========================================================================== */
+.level-header{
+  text-align:center;
+  margin-bottom: 22px;
+}
+.level-greeting{
+  display:inline-block;
+  font-family: var(--font-display);
+  font-weight:700;
+  font-size:1.15rem;
+  color: var(--bila-blue-deep);
+  background: rgba(255,255,255,0.82);
+  backdrop-filter: blur(2px);
+  padding: 12px 26px;
+  border-radius: var(--radius-btn);
+  box-shadow: var(--bila-shadow-sm);
+}
+.level-greeting b{ color: var(--bila-blue); }
+
+.level-path{
+  display:flex;
+  flex-direction:column-reverse;
+  gap: 34px;
+  align-items:center;
+  padding: 10px 0 20px;
+}
+.level-node{
+  display:flex;
+  align-items:center;
+  gap:14px;
+  flex-direction: column;
+}
+.level-node:nth-child(even){ align-self:flex-start; margin-left: 8%; }
+.level-node:nth-child(odd){ align-self:flex-end; margin-right: 8%; }
+.level-circle{
+  width:72px; height:72px;
+  border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  flex-direction:column;
+  font-family: var(--font-display);
+  font-weight:800;
+  box-shadow: var(--bila-shadow-sm);
+  border: 4px solid #fff;
+  transition: transform .2s var(--ease-bounce);
+  position:relative;
+}
+.level-circle:active{ transform: scale(.92); }
+.level-node.locked .level-circle{ background:#E4EAF0; color:#9AAAB6; }
+.level-node.unlocked .level-circle{ background: var(--bila-mint); color:#fff; }
+.level-node.completed .level-circle{ background: var(--bila-yellow); color: var(--bila-blue-deep); }
+.level-node.locked{ pointer-events:none; }
+.level-lock-icon{ width:20px; height:20px; }
+.level-check{
+  position:absolute; top:-6px; right:-6px;
+  width:24px;height:24px;border-radius:50%;
+  background:var(--bila-mint-dark); color:#fff;
+  display:flex;align-items:center;justify-content:center;
+  border: 2px solid #fff;
+}
+.level-check svg{ width:13px; height:13px; }
+.level-label{
+  background:#fff;
+  padding:7px 16px;
+  border-radius: var(--radius-btn);
+  font-weight:700;
+  font-size:.85rem;
+  color: var(--bila-blue-deep);
+  box-shadow: var(--bila-shadow-sm);
+  text-align:center;
+  white-space:nowrap;
+}
+.level-sub{ display:block; font-weight:500; color:var(--bila-text-soft); font-size:.72rem; }
+.level-connector{
+  width:3px; height:34px;
+  background: repeating-linear-gradient(180deg,#CDE3F0 0 6px, transparent 6px 12px);
+}
+
+/* ==========================================================================
+   SOAL / GAME
+   ========================================================================== */
+.target-card{
+  text-align:center;
+  margin-top: 4px;
+}
+.target-label{
+  font-family: var(--font-display);
+  font-weight:700;
+  color: var(--bila-text-soft);
+  font-size:.9rem;
+  margin-bottom:10px;
+}
+.target-dots{
+  display:flex;
+  flex-wrap:wrap;
+  gap:9px;
+  justify-content:center;
+  margin-bottom: 18px;
+}
+.target-dots .dot{
+  width:22px; height:22px;
+  border-radius:50%;
+  background: var(--bila-mint);
+}
+
+.balok-count{
+  text-align:center;
+  margin: 14px 0 6px;
+}
+.balok-count .label{
+  font-family: var(--font-display);
+  font-weight:700;
+  color: var(--bila-text-soft);
+  font-size:.9rem;
+}
+.balok-count .num{
+  font-family: var(--font-display);
+  font-weight:800;
+  font-size: 2.4rem;
+  color: var(--bila-blue);
+  line-height:1.1;
+}
+
+.hitung-label{
+  text-align:center;
+  font-family: var(--font-display);
+  font-weight:700;
+  color: var(--bila-text-soft);
+  font-size:.9rem;
+  margin: 14px 0 10px;
+}
+
+/* ---- block tray: menampilkan balok fisik yang sedang ditaruh di reader ---- */
+.hitung-row{
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+  justify-content:center;
+  align-items:center;
+  min-height: 64px;
+  margin-bottom: 22px;
+  padding: 10px;
+  border-radius: var(--radius-sm);
+  border: 2.5px dashed var(--bila-light-blue);
+  background: var(--bila-card-soft);
+  transition: border-color .3s;
+}
+.hitung-row.has-blocks{ border-style: solid; }
+.block-tile{
+  width:46px; height:46px;
+  border-radius: 14px;
+  background: var(--bila-mint);
+  color:#fff;
+  display:flex; align-items:center; justify-content:center;
+  font-family: var(--font-display);
+  font-weight:800;
+  font-size:1.15rem;
+  box-shadow: 0 4px 0 var(--bila-mint-dark);
+  animation: pop-in .35s var(--ease-bounce);
+}
+.tray-empty{
+  width:100%;
+  text-align:center;
+  color: var(--bila-text-soft);
+  font-size: .88rem;
+  font-weight:600;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+}
+.tray-empty svg{ width:18px; height:18px; flex-shrink:0; }
+
+.soal-footer-progress{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  margin-top: 6px;
+}
+.soal-footer-progress .step{ font-size:.82rem; color:var(--bila-text-soft); font-weight:700; margin-right:6px; }
+
+.check-btn-wrap{ margin-top:22px; }
+
+/* ==========================================================================
+   KONEKSI ALAT (ESP8266 / NFC reader) — badge, tombol gear, modal pengaturan
+   ========================================================================== */
+.btn-settings{
+  width:46px; height:46px;
+  border-radius:50%;
+  background:#fff;
+  color: var(--bila-blue);
+  display:flex; align-items:center; justify-content:center;
+  box-shadow: var(--bila-shadow-sm);
+  flex-shrink:0;
+}
+.btn-settings svg{ width:22px; height:22px; }
+
+.device-badge{
+  display:inline-flex;
+  align-items:center;
+  gap:7px;
+  background:#fff;
+  padding: 7px 14px;
+  border-radius: var(--radius-btn);
+  box-shadow: var(--bila-shadow-sm);
+  font-size:.8rem;
+  font-weight:700;
+  color: var(--bila-text-soft);
+}
+.device-badge .dot{ width:9px; height:9px; border-radius:50%; background:#C7D3DC; }
+.device-badge.connected .dot{ background: var(--bila-mint-dark); }
+.device-badge.connected{ color: var(--bila-mint-dark); }
+.device-badge.simulasi{ color: var(--bila-purple); }
+.device-badge.simulasi .dot{ background: var(--bila-purple); }
+
+.topbar-right{ display:flex; align-items:center; gap:10px; }
+
+.settings-modal .modal{
+  background: var(--bila-bg-sky);
+  border-radius: var(--radius-card);
+  max-width: 420px; width:100%;
+  padding: 30px 26px;
+  box-shadow: var(--bila-shadow);
+}
+.settings-modal .modal h3{
+  font-family: var(--font-display);
+  color: var(--bila-blue-deep);
+  font-size:1.25rem;
+  margin-bottom: 6px;
+}
+.settings-modal .modal p.hint{ color: var(--bila-text-soft); font-size:.85rem; margin-bottom:18px; }
+.settings-row{ display:flex; gap:10px; margin-top:14px; }
+.settings-row input{
+  flex:1;
+  padding: 12px 14px;
+  border-radius: var(--radius-sm);
+  border: 2.5px solid var(--bila-light-blue);
+  font-size:.95rem;
+  background:#fff;
+}
+.settings-toggle{
+  display:flex; align-items:center; justify-content:space-between;
+  margin-top:20px;
+  padding-top:18px;
+  border-top: 1.5px dashed var(--bila-light-blue);
+}
+.settings-toggle span{ font-weight:700; color: var(--bila-text); font-size:.92rem; }
+.switch{
+  width:48px; height:28px;
+  border-radius:999px;
+  background:#D9E6EC;
+  position:relative;
+  flex-shrink:0;
+  transition: background .2s;
+}
+.switch::after{
+  content:'';
+  position:absolute; top:3px; left:3px;
+  width:22px; height:22px;
+  border-radius:50%;
+  background:#fff;
+  box-shadow: 0 2px 4px rgba(0,0,0,.2);
+  transition: transform .2s var(--ease-bounce);
+}
+.switch.on{ background: var(--bila-purple); }
+.switch.on::after{ transform: translateX(20px); }
+
+.sim-panel{ margin-top:18px; }
+.sim-panel-label{ font-size:.85rem; font-weight:700; color: var(--bila-text-soft); margin-bottom:10px; }
+.sim-grid{ display:flex; flex-wrap:wrap; gap:8px; }
+.sim-block-btn{
+  width:40px; height:40px;
+  border-radius:12px;
+  background:#fff;
+  border: 2.5px solid var(--bila-mint);
+  color: var(--bila-mint-dark);
+  font-family: var(--font-display);
+  font-weight:800;
+  transition: transform .15s var(--ease-bounce);
+}
+.sim-block-btn:active{ transform: scale(.88); }
+.sim-clear-btn{
+  margin-top:12px;
+  font-size:.82rem;
+  font-weight:700;
+  color:#D8543B;
+  text-decoration: underline;
+}
+.settings-close{ margin-top: 24px; }
+
+/* ==========================================================================
+   OVERLAY FEEDBACK (Benar / Salah)
+   ========================================================================== */
+.overlay{
+  position: fixed; inset:0;
+  z-index: 400;
+  display:flex; align-items:center; justify-content:center;
+  padding: 20px;
+  background: rgba(20,45,70,0.35);
+  opacity:0; visibility:hidden;
+  transition: opacity .25s var(--ease-soft);
+}
+.overlay.is-open{ opacity:1; visibility:visible; }
+.overlay-card{
+  width:100%; max-width: 380px;
+  background: var(--bila-bg-sky);
+  border-radius: var(--radius-card);
+  padding: 34px 26px;
+  text-align:center;
+  box-shadow: var(--bila-shadow);
+  transform: translateY(20px) scale(.95);
+  transition: transform .3s var(--ease-bounce);
+  position: relative;
+  overflow: hidden;
+}
+.overlay.is-open .overlay-card{ transform: translateY(0) scale(1); }
+.overlay-card.overlay-benar{ background: linear-gradient(180deg,#FFF8E0,#EAF9F0); }
+.overlay-card.overlay-salah{ background: #FFF1EC; }
+.overlay-title{
+  font-family: var(--font-display);
+  font-weight:800;
+  font-size:1.6rem;
+  margin-top: 14px;
+}
+.overlay-benar .overlay-title{ color: var(--bila-mint-dark); }
+.overlay-salah .overlay-title{ color:#D8543B; }
+.overlay-sub{ margin-top:8px; color: var(--bila-text-soft); font-weight:600; font-size:.94rem; }
+.overlay-card .btn{ margin-top: 22px; }
+
+.confetti{
+  position:absolute; inset:0;
+  pointer-events:none;
+  overflow:hidden;
+}
+.confetti span{
+  position:absolute;
+  top:-10%;
+  width:8px; height:8px;
+  border-radius:2px;
+  animation: confetti-fall 1.4s ease-in forwards;
+}
+@keyframes confetti-fall{
+  to{ transform: translateY(340px) rotate(260deg); opacity:0; }
+}
+
+/* ==========================================================================
+   LEVEL SELESAI
+   ========================================================================== */
+.selesai-stage{ text-align:center; }
+.selesai-title{
+  font-family: var(--font-display);
+  font-weight:800;
+  font-size: 1.7rem;
+  color: var(--bila-blue-deep);
+  margin-bottom: 6px;
+}
+.stars-row{
+  display:flex;
+  justify-content:center;
+  gap:10px;
+  margin: 18px 0 6px;
+}
+.stars-row svg{
+  width:46px; height:46px;
+  opacity:.25;
+  transform: scale(.5);
+  transition: all .4s var(--ease-bounce);
+}
+.stars-row svg.earned{
+  opacity:1;
+  transform: scale(1);
+  filter: drop-shadow(0 4px 8px rgba(255,190,40,.5));
+}
+.unlock-panel{
+  margin-top: 26px;
+  background:#fff;
+  border-radius: var(--radius-card);
+  padding: 20px;
+  box-shadow: var(--bila-shadow-sm);
+}
+.unlock-row{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap: 16px;
+  margin-top: 12px;
+}
+.unlock-node{
+  display:flex; flex-direction:column; align-items:center; gap:8px;
+  font-weight:700; font-size:.85rem; color: var(--bila-text-soft);
+}
+.unlock-circle{
+  width:52px; height:52px; border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  font-family: var(--font-display); font-weight:800;
+  background:#E4EAF0; color:#9AAAB6;
+  border: 3px solid #fff;
+  box-shadow: var(--bila-shadow-sm);
+}
+.unlock-node.done .unlock-circle{ background: var(--bila-mint); color:#fff; }
+.unlock-node.new .unlock-circle{
+  background: var(--bila-yellow);
+  color: var(--bila-blue-deep);
+  animation: pop-in .6s var(--ease-bounce);
+}
+.unlock-arrow{ color:#B9C7D2; font-size:1.2rem; }
+.selesai-stage .btn{ margin-top: 28px; }
+
+/* ==========================================================================
+   RESPONSIVE TWEAKS
+   ========================================================================== */
+@media (min-width: 768px){
+  .card{ padding: 36px 40px; }
+  .mascot-md{ width:130px; }
+  .level-node:nth-child(even){ margin-left: 14%; }
+  .level-node:nth-child(odd){ margin-right: 14%; }
+}
+@media (max-width: 380px){
+  .card{ padding: 22px 18px; }
+  .balok-count .num{ font-size:2rem; }
+  .level-circle{ width:64px; height:64px; }
+}
+
+/* utility */
+.hidden{ display:none !important; }
+.visually-hidden{
+  position:absolute; width:1px; height:1px; overflow:hidden;
+  clip:rect(0,0,0,0); white-space:nowrap;
+}
